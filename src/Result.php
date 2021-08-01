@@ -18,7 +18,7 @@ class Result {
     public static $panicCallback = [self::class, 'defaultPanic'];
 
     public static function defaultPanic($error) {
-        if ($error instanceof \Exception)
+        if ($error instanceof \Throwable)
             throw $error;
 
         throw new PanicException($error);
