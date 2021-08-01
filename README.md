@@ -87,7 +87,7 @@ Result::$panicCallback = function ($error) {
     throw new Exception((string)$error);
 };
 
-$o = Result::fail(new ErrorInfo("no_products", "Products cannot be empty");
+$o = Result::fail(new ErrorInfo("no_products", "Products cannot be empty"));
 
 // Throws a DomainException with the message: "[no_products] Products cannot be empty"
 $o->unwrap();
