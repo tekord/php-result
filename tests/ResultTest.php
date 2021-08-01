@@ -106,11 +106,11 @@ final class ResultTest extends TestCase {
     }
 
     public function testPanic() {
-        Result::$panicCallback = function () {
-            return throw new Exception("Overridden Panic Exception");
+        Result::$panicCallback = function ($error) {
+            throw new Exception($error);
         };
 
-        $o = Result::fail("Failed");
+        $o = Result::fail("Overridden Panic Exception");
 
         $this->expectExceptionMessage("Overridden Panic Exception");
 
