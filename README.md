@@ -32,17 +32,23 @@ class ErrorInfo {
 
 function createOrder(User $user, $products): Result {
     if (!$user->isVerified())
-        return Result::fail(new ErrorInfo("unverified_user", "Unverified users are not allowed to order", [
-            'user' => $user
-        ]);
+        return Result::fail(
+            new ErrorInfo("unverified_user", "Unverified users are not allowed to order", [
+                'user' => $user
+            ])
+        );
         
     if ($user->hasDebts())
-        return Result::fail(new ErrorInfo("user_has_debts", "Users with debts are not allowed to order new items", [
-            'user' => $user
-        ]);
+        return Result::fail(
+            new ErrorInfo("user_has_debts", "Users with debts are not allowed to order new items", [
+                'user' => $user
+            ])
+        );
         
     if ($products->isEmpty())
-        return Result::fail(new ErrorInfo("no_products", "Products cannot be empty");
+        return Result::fail(
+            new ErrorInfo("no_products", "Products cannot be empty")
+        );
   
     // Create a new order here...
     
