@@ -3,17 +3,23 @@
 namespace Tekord\Result;
 
 /**
- * @property-read mixed $ok
- * @property-read mixed $error
+ * @template OkType
+ * @template ErrorType
+ *
+ * @property-read OkType $ok
+ * @property-read ErrorType $error
  *
  * @author Cyrill Tekord
  */
 class Result {
-    /** @var mixed */
-    protected $ok;
+    protected const DISCRIMINANT_OK = 0;
+    protected const DISCRIMINANT_ERROR = 1;
 
-    /** @var mixed */
-    protected $error;
+    /** @var int */
+    protected $discriminant;
+
+    /** @var OkType|ErrorType */
+    protected $value;
 
     public static $panicCallback = [self::class, 'defaultPanic'];
 
@@ -28,35 +34,50 @@ class Result {
         call_user_func(static::$panicCallback, $error);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return OkType|ErrorType|null
+     */
     public function __get($name) {
-        return $this->$name;
+        if ($name == 'ok') {
+            return $this->isOk() ? $this->value : null;
+        } else if ($name == 'error') {
+            return $this->isFailed() ? $this->value : null;
+        }
+
+        throw new \Exception('Invalid property: ' . $name . '. Class ' . static::class . ' provides only "ok" and "error" properties');
     }
 
-    protected function __construct($ok, $error) {
-        $this->ok = $ok;
-        $this->error = $error;
+    /**
+     * @param int $discriminant
+     * @param OkType|ErrorType $value
+     */
+    protected function __construct(int $discriminant, $value) {
+        $this->discriminant = $discriminant;
+        $this->value = $value;
     }
 
     /**
      * Creates a succeeded result instance.
      *
-     * @param $ok
+     * @param OkType $value
      *
-     * @return static
+     * @return Result<OkType, null>
      */
-    public static function success($ok) {
-        return new static($ok, null);
+    public static function success($value) {
+        return new static(static::DISCRIMINANT_OK, $value);
     }
 
     /**
      * Creates a failed result instance.
      *
-     * @param $error
+     * @param ErrorType $value
      *
-     * @return static
+     * @return Result<null, ErrorType>
      */
-    public static function fail($error) {
-        return new static(null, $error);
+    public static function fail($value) {
+        return new static(static::DISCRIMINANT_ERROR, $value);
     }
 
     /**
@@ -65,7 +86,7 @@ class Result {
      * @return bool
      */
     public function isFailed() {
-        return $this->error !== null;
+        return $this->discriminant == static::DISCRIMINANT_ERROR;
     }
 
     /**
@@ -74,33 +95,33 @@ class Result {
      * @return bool
      */
     public function isOk() {
-        return $this->error === null;
+        return $this->discriminant == static::DISCRIMINANT_OK;
     }
 
     /**
      * Returns the contained OK value, or panics if there is an error.
      *
-     * @return mixed
+     * @return OkType
      */
     public function unwrap() {
         if ($this->isFailed())
-            static::panic($this->error);
+            static::panic($this->value);
 
-        return $this->ok;
+        return $this->value;
     }
 
     /**
      * Returns the contained OK value, or the default value if there is an error.
      *
-     * @param $default
+     * @param mixed $default
      *
-     * @return mixed
+     * @return OkType|mixed
      */
     public function unwrapOrDefault($default) {
         if ($this->isFailed())
             return $default;
 
-        return $this->ok;
+        return $this->value;
     }
 
     /**
@@ -108,28 +129,28 @@ class Result {
      *
      * @param callable $valueRetriever
      *
-     * @return mixed
+     * @return OkType|mixed
      */
     public function unwrapOrElse(callable $valueRetriever) {
         if ($this->isFailed())
             return $valueRetriever();
 
-        return $this->ok;
+        return $this->value;
     }
 
     /**
      * Returns the contained OK value passed through the mapper, or the default value if there is an error.
      *
      * @param callable $mapper
-     * @param $default
+     * @param mixed $default
      *
-     * @return mixed
+     * @return OkType|mixed
      */
     public function mapOrDefault(callable $mapper, $default) {
         if ($this->isFailed())
             return $default;
 
-        return $mapper($this->ok);
+        return $mapper($this->value);
     }
 
     /**
@@ -139,12 +160,12 @@ class Result {
      * @param callable $mapper
      * @param callable $valueRetriever
      *
-     * @return mixed
+     * @return OkType|mixed
      */
     public function mapOrElse(callable $mapper, callable $valueRetriever) {
         if ($this->isFailed())
             return $valueRetriever();
 
-        return $mapper($this->ok);
+        return $mapper($this->value);
     }
 }

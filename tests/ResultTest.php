@@ -116,4 +116,15 @@ final class ResultTest extends TestCase {
 
         $o->unwrap();
     }
+
+    public function testPropertyAccess() {
+        $o = Result::success("It works");
+
+        $this->assertEquals("It works", $o->ok);
+        $this->assertEquals(null, $o->error);
+
+        $this->expectException(\Exception::class);
+
+        $this->assertEquals(null, $o->nonExistingProperty);
+    }
 }
