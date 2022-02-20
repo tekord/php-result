@@ -16,7 +16,10 @@ final class ResultTest extends TestCase {
         $this->assertFalse($o->isFailed());
 
         $this->assertEquals("Everything is OK", $o->ok);
+        $this->assertEquals("Everything is OK", $o->getOk());
+
         $this->assertNull($o->error);
+        $this->assertNull($o->getError());
     }
 
     public function testFail() {
@@ -26,7 +29,10 @@ final class ResultTest extends TestCase {
         $this->assertTrue($o->isFailed());
 
         $this->assertEquals("Something went wrong", $o->error);
+        $this->assertEquals("Something went wrong", $o->getError());
+
         $this->assertNull($o->ok);
+        $this->assertNull($o->getOk());
     }
 
     public function testUnwrap() {

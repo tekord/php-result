@@ -41,21 +41,31 @@ class Result {
      */
     public function __get($name) {
         if ($name == 'ok') {
-            return $this->isOk() ? $this->value : null;
+            return $this->getOk();
         } else if ($name == 'error') {
-            return $this->isFailed() ? $this->value : null;
+            return $this->getError();
         }
 
         throw new \Exception('Invalid property: ' . $name . '. Class ' . static::class . ' provides only "ok" and "error" properties');
     }
 
     /**
-     * @param int $discriminant
-     * @param OkType|ErrorType $value
+     * It is better to use the `unwrap` function instead of this one.
+     *
+     * @return OkType|null
      */
-    protected function __construct(int $discriminant, $value) {
-        $this->discriminant = $discriminant;
-        $this->value = $value;
+    public function getOk() {
+        return $this->isOk() ? $this->value : null;
+    }
+
+    /**
+     * @return ErrorType|null
+     */
+    public function getError() {
+        return $this->isFailed() ? $this->value : null;
+    }
+
+    protected function __construct() {
     }
 
     /**
@@ -63,10 +73,15 @@ class Result {
      *
      * @param OkType $value
      *
-     * @return Result<OkType, null>
+     * @return Result<OkType, mixed>
      */
     public static function success($value) {
-        return new static(static::DISCRIMINANT_OK, $value);
+        $result = new static();
+
+        $result->discriminant = static::DISCRIMINANT_OK;
+        $result->value = $value;
+
+        return $result;
     }
 
     /**
@@ -74,10 +89,15 @@ class Result {
      *
      * @param ErrorType $value
      *
-     * @return Result<null, ErrorType>
+     * @return Result<ErrorType, ErrorType>
      */
     public static function fail($value) {
-        return new static(static::DISCRIMINANT_ERROR, $value);
+        $result = new static();
+
+        $result->discriminant = static::DISCRIMINANT_ERROR;
+        $result->value = $value;
+
+        return $result;
     }
 
     /**
@@ -113,9 +133,11 @@ class Result {
     /**
      * Returns the contained OK value, or the default value if there is an error.
      *
-     * @param mixed $default
+     * @template T
      *
-     * @return OkType|mixed
+     * @param T $default
+     *
+     * @return OkType|T
      */
     public function unwrapOrDefault($default) {
         if ($this->isFailed())
@@ -141,10 +163,12 @@ class Result {
     /**
      * Returns the contained OK value passed through the mapper, or the default value if there is an error.
      *
-     * @param callable $mapper
-     * @param mixed $default
+     * @template T
      *
-     * @return OkType|mixed
+     * @param callable $mapper
+     * @param T $default
+     *
+     * @return OkType|T
      */
     public function mapOrDefault(callable $mapper, $default) {
         if ($this->isFailed())
