@@ -2,8 +2,8 @@
 
 Result object for PHP inspired by the Rust programming language.
 
-This object is useful when you want your errors to be returned instead of being thrown. A couple of helper methods makes
-the usage very smooth.
+This object is useful when you want your errors to be returned instead of being thrown. Several helper functions make it
+easy to use.
 
 ## Installation
 
