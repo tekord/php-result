@@ -1,7 +1,13 @@
 # CHANGELOG
 
 All notable changes will be documented in this file.
-                        
+           
+## 0.8.0 - 2022-05-16
+
+- Reworked panicking mechanism:
+  - Removed the $panicCallback static property
+  - Added the $panicExceptionClass static property
+             
 ## 0.7.0 - 2022-02-20
                                      
 - Improved type hinting
