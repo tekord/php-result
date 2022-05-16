@@ -69,9 +69,9 @@ class Result {
      *
      * @param OkType $value
      *
-     * @return Result<OkType, mixed>
+     * @return Result<OkType, void>
      */
-    public static function success($value) {
+    public static function success($value = null) {
         $result = new static();
 
         $result->discriminant = static::DISCRIMINANT_OK;
@@ -85,9 +85,9 @@ class Result {
      *
      * @param ErrorType $value
      *
-     * @return Result<ErrorType, ErrorType>
+     * @return Result<void, ErrorType>
      */
-    public static function fail($value) {
+    public static function fail($value = null) {
         $result = new static();
 
         $result->discriminant = static::DISCRIMINANT_ERROR;
