@@ -21,17 +21,13 @@ class Result {
     /** @var OkType|ErrorType */
     protected $value;
 
-    public static $panicCallback = [self::class, 'defaultPanic'];
+    public static $panicExceptionClass = PanicException::class;
 
-    public static function defaultPanic($error) {
+    protected function panic($error) {
         if ($error instanceof \Throwable)
             throw $error;
 
-        throw new PanicException($error);
-    }
-
-    protected static function panic($error) {
-        call_user_func(static::$panicCallback, $error);
+        throw new static::$panicExceptionClass($error);
     }
 
     /**
@@ -125,7 +121,7 @@ class Result {
      */
     public function unwrap() {
         if ($this->isFailed())
-            static::panic($this->value);
+            $this->panic($this->value);
 
         return $this->value;
     }

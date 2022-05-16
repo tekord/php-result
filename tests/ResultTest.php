@@ -2,7 +2,6 @@
 
 namespace Tekord\Result\Tests;
 
-use Exception;
 use Tekord\Result\Result;
 
 /**
@@ -61,14 +60,6 @@ final class ResultTest extends TestCase {
         $this->assertEquals(2000, $result);
     }
 
-    public function testUnwrapFail() {
-        $o = Result::fail("Failed");
-
-        $this->expectException(Exception::class);
-
-        $o->unwrap();
-    }
-
     public function testMap() {
         $mapper = function ($value) {
             return "($value)";
@@ -109,18 +100,6 @@ final class ResultTest extends TestCase {
         });
 
         $this->assertEquals('-', $result);
-    }
-
-    public function testPanic() {
-        Result::$panicCallback = function ($error) {
-            throw new Exception($error);
-        };
-
-        $o = Result::fail("Overridden Panic Exception");
-
-        $this->expectExceptionMessage("Overridden Panic Exception");
-
-        $o->unwrap();
     }
 
     public function testPropertyAccess() {
