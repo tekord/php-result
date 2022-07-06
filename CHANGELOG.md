@@ -2,6 +2,11 @@
 
 All notable changes will be documented in this file.
            
+## 0.8.1 - 2022-07-06
+
+- `success` and `fail` static functions now have a default value
+- Refactored the IDE type hint checker file
+
 ## 0.8.0 - 2022-05-16
 
 - Reworked panicking mechanism:
