@@ -30,19 +30,19 @@ class Result {
         throw new static::$panicExceptionClass($error);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return OkType|ErrorType|null
-     */
     public function __get($name) {
-        if ($name == 'ok') {
-            return $this->getOk();
-        } else if ($name == 'error') {
-            return $this->getError();
+        if ($name === 'ok') {
+            /** @var OkType $returnValue */
+            $returnValue = $this->getOk();
+        } else if ($name === 'error') {
+            /** @var ErrorType $returnValue */
+            $returnValue = $this->getError();
+        }
+        else {
+            throw new \Exception('Invalid property: ' . $name . '. Class ' . static::class . ' provides only "ok" and "error" properties');
         }
 
-        throw new \Exception('Invalid property: ' . $name . '. Class ' . static::class . ' provides only "ok" and "error" properties');
+        return $returnValue;
     }
 
     /**
