@@ -34,6 +34,18 @@ final class ResultTest extends TestCase {
         $this->assertNull($o->getOk());
     }
 
+    public function testResultsWithDefaultValue() {
+        $success = Result::success();
+
+        $this->assertTrue($success->isOk());
+        $this->assertFalse($success->isFailed());
+
+        $fail = Result::fail();
+
+        $this->assertTrue($fail->isFailed());
+        $this->assertFalse($fail->isOk());
+    }
+
     public function testUnwrap() {
         $o = Result::success("OK");
 
