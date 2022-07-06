@@ -23,6 +23,13 @@ class Result {
 
     public static $panicExceptionClass = PanicException::class;
 
+    /**
+     * @param \Throwable|mixed $error
+     *
+     * @return never-returns
+     *
+     * @throws \Throwable
+     */
     protected function panic($error) {
         if ($error instanceof \Throwable)
             throw $error;
