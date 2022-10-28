@@ -76,7 +76,7 @@ class Result {
      *
      * @param OkType $value
      *
-     * @return Result<OkType, void>
+     * @return static<OkType, void>
      */
     public static function success($value = null) {
         $result = new static();
@@ -92,7 +92,7 @@ class Result {
      *
      * @param ErrorType $value
      *
-     * @return Result<void, ErrorType>
+     * @return static<void, ErrorType>
      */
     public static function fail($value = null) {
         $result = new static();
