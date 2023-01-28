@@ -164,6 +164,18 @@ class Result {
     }
 
     /**
+     * Returns the contained OK value, or null if there is an error.
+     *
+     * @return OkType|null
+     */
+    public function unwrapOrNull() {
+        if ($this->isFailed())
+            return null;
+
+        return $this->value;
+    }
+
+    /**
      * Returns the contained OK value passed through the mapper, or the default value if there is an error.
      *
      * @template T
