@@ -2,6 +2,10 @@
 
 All notable changes will be documented in this file.
 
+## 0.8.3 - 2023-01-28
+
+- Added `unwrapOrNull` method
+
 ## 0.8.2 - 2022-11-24
 
 - Fixed type hints for the `success` and `fail` methods
