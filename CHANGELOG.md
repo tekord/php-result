@@ -1,6 +1,10 @@
 # CHANGELOG
 
 All notable changes will be documented in this file.
+
+## 0.8.2 - 2022-11-24
+
+- Fixed type hints for the `success` and `fail` methods
            
 ## 0.8.1 - 2022-07-06
 
