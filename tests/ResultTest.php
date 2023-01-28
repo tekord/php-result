@@ -65,6 +65,14 @@ final class ResultTest extends TestCase {
 
         $o = Result::fail("Failed");
 
+        $result = $o->unwrapOrNull();
+
+        $this->assertEquals(null, $result);
+
+        // -
+
+        $o = Result::fail("Failed");
+
         $result = $o->unwrapOrElse(function () {
             return 2000;
         });
