@@ -80,23 +80,18 @@ else {
 $newOrder = $createOrderResult->unwrapOrDefault(new Order());
 ```
 
-You can customize a panic exception throwing:
+You can extend the Result class to override the exception class (note the phpDoc):
 
 ```php
-Result::$panicCallback = function ($error) {
-    if ($error instanceof ErrorInfo)
-        throw new DomainException("[$error->code] " . $error->message);
-        
-   if ($error instanceof Exception)
-        throw $error;
-        
-    throw new Exception((string)$error);
-};
-
-$o = Result::fail(new ErrorInfo("no_products", "Products cannot be empty"));
-
-// Throws a DomainException with the message: "[no_products] Products cannot be empty"
-$o->unwrap();
+/**
+ * @tempate OkType
+ * @tempate ErrorType
+ *
+ * @extends Result<OkType, ErrorType>
+ */
+class CustomResult extends Result {
+    static $panicExceptionClass = DomainException::class;
+}
 ```
 
 ## Testing
