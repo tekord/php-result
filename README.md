@@ -5,6 +5,17 @@ Result object for PHP inspired by the Rust programming language.
 This object is useful when you want your errors to be returned instead of being thrown. Several helper functions make it
 easy to use.
 
+[![PHP Version Support][php-badge]][php]
+[![Packagist version][packagist-badge]][packagist]
+[![License][license-badge]][license]
+
+[php-badge]: https://img.shields.io/packagist/php-v/tekord/php-result?logo=php&color=8892BF
+[php]: https://www.php.net/supported-versions.php
+[packagist-badge]: https://img.shields.io/packagist/v/tekord/php-result.svg?logo=packagist
+[packagist]: https://packagist.org/packages/tekord/php-result
+[license-badge]: https://img.shields.io/badge/license-MIT-green.svg
+[license]: https://github.com/tekord/php-result/blob/main/LICENSE-MIT
+
 ## Installation
 
 Install the package via Composer:
