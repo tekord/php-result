@@ -2,6 +2,11 @@
 
 All notable changes will be documented in this file.
 
+## 0.9
+
+- Changed requirement for PHP version to >=8.0
+- `Result` class split-up into `ResultInterface` interface and `ResultMethods` trait
+
 ## 0.8.3 - 2023-01-28
 
 - Added `unwrapOrNull` method
