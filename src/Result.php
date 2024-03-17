@@ -2,6 +2,8 @@
 
 namespace Tekord\Result;
 
+use Tekord\Result\Concerns\ResultMethods;
+
 /**
  * @template OkType
  * @template ErrorType
@@ -9,9 +11,15 @@ namespace Tekord\Result;
  * @property-read OkType $ok
  * @property-read ErrorType $error
  *
+ * @implements ResultInterface<OkType, ErrorType>
+ *
+ * @mixin ResultMethods<OkType, ErrorType>
+ *
  * @author Cyrill Tekord
  */
-class Result {
+class Result implements ResultInterface {
+    use ResultMethods;
+
     protected const DISCRIMINANT_OK = 0;
     protected const DISCRIMINANT_ERROR = 1;
 
@@ -37,35 +45,20 @@ class Result {
         throw new static::$panicExceptionClass($error);
     }
 
-    public function __get($name) {
-        if ($name === 'ok') {
-            /** @var OkType $returnValue */
-            $returnValue = $this->getOk();
-        } else if ($name === 'error') {
-            /** @var ErrorType $returnValue */
-            $returnValue = $this->getError();
-        }
-        else {
-            throw new \Exception('Invalid property: ' . $name . '. Class ' . static::class . ' provides only "ok" and "error" properties');
-        }
-
-        return $returnValue;
-    }
-
-    /**
-     * It is better to use the `unwrap` function instead of this one.
-     *
-     * @return OkType|null
-     */
     public function getOk() {
         return $this->isOk() ? $this->value : null;
     }
 
-    /**
-     * @return ErrorType|null
-     */
     public function getError() {
         return $this->isFailed() ? $this->value : null;
+    }
+
+    public function isFailed() {
+        return $this->discriminant == static::DISCRIMINANT_ERROR;
+    }
+
+    public function isOk() {
+        return $this->discriminant == static::DISCRIMINANT_OK;
     }
 
     protected function __construct() {
@@ -101,110 +94,5 @@ class Result {
         $result->value = $value;
 
         return $result;
-    }
-
-    /**
-     * Indicates whether the result contains an error.
-     *
-     * @return bool
-     */
-    public function isFailed() {
-        return $this->discriminant == static::DISCRIMINANT_ERROR;
-    }
-
-    /**
-     * Indicates whether the result is OK and there is no error.
-     *
-     * @return bool
-     */
-    public function isOk() {
-        return $this->discriminant == static::DISCRIMINANT_OK;
-    }
-
-    /**
-     * Returns the contained OK value, or panics if there is an error.
-     *
-     * @return OkType
-     */
-    public function unwrap() {
-        if ($this->isFailed())
-            $this->panic($this->value);
-
-        return $this->value;
-    }
-
-    /**
-     * Returns the contained OK value, or the default value if there is an error.
-     *
-     * @template T
-     *
-     * @param T $default
-     *
-     * @return OkType|T
-     */
-    public function unwrapOrDefault($default) {
-        if ($this->isFailed())
-            return $default;
-
-        return $this->value;
-    }
-
-    /**
-     * Returns the contained OK value, or a value provided by the callback if there is an error.
-     *
-     * @param callable $valueRetriever
-     *
-     * @return OkType|mixed
-     */
-    public function unwrapOrElse(callable $valueRetriever) {
-        if ($this->isFailed())
-            return $valueRetriever();
-
-        return $this->value;
-    }
-
-    /**
-     * Returns the contained OK value, or null if there is an error.
-     *
-     * @return OkType|null
-     */
-    public function unwrapOrNull() {
-        if ($this->isFailed())
-            return null;
-
-        return $this->value;
-    }
-
-    /**
-     * Returns the contained OK value passed through the mapper, or the default value if there is an error.
-     *
-     * @template T
-     *
-     * @param callable $mapper
-     * @param T $default
-     *
-     * @return OkType|T
-     */
-    public function mapOrDefault(callable $mapper, $default) {
-        if ($this->isFailed())
-            return $default;
-
-        return $mapper($this->value);
-    }
-
-    /**
-     * Returns the contained OK value passed through the mapper, or a value provided by the callback if there is
-     * an error.
-     *
-     * @param callable $mapper
-     * @param callable $valueRetriever
-     *
-     * @return OkType|mixed
-     */
-    public function mapOrElse(callable $mapper, callable $valueRetriever) {
-        if ($this->isFailed())
-            return $valueRetriever();
-
-        return $mapper($this->value);
     }
 }
